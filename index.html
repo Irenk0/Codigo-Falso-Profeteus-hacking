@@ -5,22 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Efecto de Escritura de Código</title>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
 
     <style>
-        body {
-            background: #111;
-            position: relative;
-            height: 100%;
-            margin: 0; 
-            padding: 20px;
-        }
-
-        html {
-            height: 100%;
-        }
-
-        .text span {
+        span {
             min-width: 5px;
             display: inline-block;
             font-family: 'Source Sans Pro', sans-serif;
@@ -28,56 +17,44 @@
             letter-spacing: 1.5px;
             color: #ED1B34;
         }
-        
+
+        body {
+            background: #111;
+            position: relative;
+        }
+
+        body, html {
+            height: 100%;
+        }
+
         .text {
             overflow: hidden;
             height: auto;
-            white-space: pre-wrap; 
-        }
-
-        .text .line {
-            display: block; 
-            margin: 0;
-            padding: 0;
         }
     </style>
 </head>
 <body>
 
-    <p class="text" data-text="struct group_info init_groups = { .usage = ATOMIC_INIT(2) };\n\nstruct group_info *groups_alloc(int gidsetsize){\n    struct group_info *group_info;\n    int nblocks;\n    int i;\n\n    nblocks = (gidsetsize + NGROUPS_PER_BLOCK - 1) / NGROUPS_PER_BLOCK;\n    /* Make sure we always allocate at least one indirect block pointer */\n    nblocks = nblocks ? : 1;\n    group_info = kmalloc(sizeof(*group_info) + nblocks*sizeof(gid_t *), GFP_USER);\n    if (!group_info)\n        return NULL;\n\n    group_info->ngroups = gidsetsize;\n    group_info->nblocks = nblocks;\n    atomic_set(&group_info->usage, 1);\n\n    if (gidsetsize <= NGROUPS_SMALL)\n        group_info->blocks[0] = group_info->small_block;\n    else {\n        for (i = 0; i < nblocks; i++) {\n            gid_t *b;\n            b = (void *)__get_free_page(GFP_USER);\n            if (!b)\n                goto out_undo_partial_alloc;\n            group_info->blocks[i] = b;\n        }\n    }\n    return group_info;\n\nout_undo_partial_alloc:\n\n    while (--i >= 0) {\n\n        free_page((unsigned long)group_info->blocks[i]);\n\n    }\n\n    kfree(group_info);\n\n    return NULL;\n\n}\n\nEXPORT_SYMBOL(groups_alloc);\n\nvoid groups_free(struct group_info *group_info)\n\n{\n\n    if (group_info->blocks[0] != group_info->small_block) {\n\n        int i;\n\n        for (i = 0; i < group_info->nblocks; i++) {\n            free_page((unsigned long)group_info->blocks[i]);\n        }\n    }\n    kfree(group_info);\n}\n\n// FIN DEL CÓDIGO"></p>
+    <p class="text" data-text="/n<!-- SISTEMA PROFETEUS v2.7.3 --> /n /n<script> /n  const target = 'gobierno.secret.db'; /n  function infiltrate() { /n    console.log('Profeteus está accediendo a tus datos...'); /n /n    // Bypassing firewall /n    let security = { /n      firewall: 'active', /n      encryption: 'AES-256', /n      status: 'VULNERABLE' /n    }; /n /n    if(security.firewall === 'active') { /n      security.firewall = 'BYPASSED'; /n      access_granted = true; /n    } /n /n    // Extrayendo información /n    fetch('/api/classified/documents') /n      .then(response => response.json()) /n      .then(data => { /n        const corruption = data.filter(item => item.illegal === true); /n        console.log('Registros comprometedores:', corruption.length); /n      }); /n  } /n</script> /n /n<style> /n  .evidence { /n    display: block; /n    color: #ED1B34; /n    font-weight: bold; /n  } /n /n  .hidden-data::before { /n    content: 'CLASIFICADO'; /n    opacity: 0; /n    transition: opacity 0.3s; /n  } /n /n  .hidden-data:hover::before { /n    opacity: 1; /* Revelando secretos */ /n  } /n</style> /n /n<div class='profeteus-scan'> /n  <h1>ANÁLISIS COMPLETADO</h1> /n  <ul class='findings'> /n    <li>847 transacciones irregulares</li> /n    <li>23 políticos comprometidos</li> /n    <li>$156M en fondos desviados</li> /n  </ul> /n</div> /n /nvar evidence_secured = true; /nvar traces_deleted = true; /n /nfunction disconnect() { /n  console.log('Borrando rastros...'); /n  for(let i = 0; i < logs.length; i++) { /n    logs[i] = null; // Limpiando registros /n  } /n  return 'SESIÓN FINALIZADA'; /n} /n /n<!-- No hay Firewall que detenga la verdad -->"></p>
 
     <script>
-    $(document).ready(function() {
         var printText = $('.text').data('text');
-        
-        var contentArray = printText.split('\n');
 
-        $('.text').empty();
-
-        var totalDelay = 0;
-        var lineDelay = 50;
-        var charDelay = 10; 
-
-        $.each(contentArray, function(lineIndex, lineContent) {
-            var $newLineContainer = $('<span class="line" id="line-' + lineIndex + '"></span>');
-            $('.text').append($newLineContainer);
+        var contentArray = printText.split('/n');
+        $.each(contentArray, function(index, newLine) {
+            $('.text').append('<span style="display:block;" id="'+index+'"></span>');
             
-            var currentLineStartDelay = totalDelay;
-
+            var lineID = index;
+            var self = $(this);
             setTimeout(function () {
-                var characters = lineContent.split('');
-
-                $.each(characters, function(charIndex, character){
+                $.each(self, function(index, chunk){
                     setTimeout(function () {
-                        $newLineContainer.append("<span>" + character + "</span>");
+                        $('#'+lineID).append("<span>"+chunk+"</span>");
                         $('body, html').scrollTop($(document).height());
-                    }, charIndex * charDelay);
+                    }, index*5);
                 });
-            }, currentLineStartDelay);
-            
-            totalDelay += (lineContent.length * charDelay) + lineDelay;
+            }, index*100);
         });
-    });
     </script>
 
 </body>
