@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuidado con tus datos uwu</title>
+    <title>Efecto de Escritura de Código</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
@@ -31,9 +31,101 @@
             overflow: hidden;
             height: auto;
         }
+
+        /* Logo central */
+        .logo-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        .logo-container.show {
+            animation: logoAppear 1s ease-out forwards, 
+                       glowPulse 2s ease-in-out infinite 1s;
+        }
+
+        .logo-container img {
+            max-width: 400px;
+            height: auto;
+            filter: drop-shadow(0 0 30px rgba(237, 27, 52, 0.8))
+                    drop-shadow(0 0 60px rgba(237, 27, 52, 0.6));
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes logoAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(237, 27, 52, 0.8))
+                        drop-shadow(0 0 60px rgba(237, 27, 52, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 50px rgba(237, 27, 52, 1))
+                        drop-shadow(0 0 100px rgba(237, 27, 52, 0.8))
+                        drop-shadow(0 0 150px rgba(237, 27, 52, 0.4));
+            }
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                transform: translate(0, 0);
+            }
+            91% {
+                transform: translate(-2px, 2px);
+            }
+            92% {
+                transform: translate(2px, -2px);
+            }
+            93% {
+                transform: translate(-2px, -2px);
+            }
+            94% {
+                transform: translate(2px, 2px);
+            }
+            95% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* Overlay oscuro para resaltar logo */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 999;
+            pointer-events: none;
+            transition: background 1s ease;
+        }
+
+        .overlay.show {
+            background: rgba(0, 0, 0, 0.7);
+        }
     </style>
 </head>
 <body>
+
+    <div class="overlay"></div>
+    <div class="logo-container">
+        <img src="image.png" alt="Profeteus Logo">
+    </div>
 
     <p class="text" data-text="/n<!-- SISTEMA PROFETEUS v2.7.3 --> /n /n<script> /n  const target = 'gobierno.secret.db'; /n  function infiltrate() { /n    console.log('Profeteus está accediendo a tus datos...'); /n /n    // Bypassing firewall /n    let security = { /n      firewall: 'active', /n      encryption: 'AES-256', /n      status: 'VULNERABLE' /n    }; /n /n    if(security.firewall === 'active') { /n      security.firewall = 'BYPASSED'; /n      access_granted = true; /n    } /n /n    // Extrayendo información /n    fetch('/api/classified/documents') /n      .then(response => response.json()) /n      .then(data => { /n        const corruption = data.filter(item => item.illegal === true); /n        console.log('Registros comprometedores:', corruption.length); /n      }); /n  } /n</script> /n /n<style> /n  .evidence { /n    display: block; /n    color: #ED1B34; /n    font-weight: bold; /n  } /n /n  .hidden-data::before { /n    content: 'CLASIFICADO'; /n    opacity: 0; /n    transition: opacity 0.3s; /n  } /n /n  .hidden-data:hover::before { /n    opacity: 1; /* Revelando secretos */ /n  } /n</style> /n /n<div class='profeteus-scan'> /n  <h1>ANÁLISIS COMPLETADO</h1> /n  <ul class='findings'> /n    <li>847 transacciones irregulares</li> /n    <li>23 políticos comprometidos</li> /n    <li>$156M en fondos desviados</li> /n  </ul> /n</div> /n /nvar evidence_secured = true; /nvar traces_deleted = true; /n /nfunction disconnect() { /n  console.log('Borrando rastros...'); /n  for(let i = 0; i < logs.length; i++) { /n    logs[i] = null; // Limpiando registros /n  } /n  return 'SESIÓN FINALIZADA'; /n} /n /n<!-- No hay Firewall que detenga la verdad -->"></p>
 
@@ -41,6 +133,9 @@
         var printText = $('.text').data('text');
 
         var contentArray = printText.split('/n');
+        var totalLines = contentArray.length;
+        var completedLines = 0;
+
         $.each(contentArray, function(index, newLine) {
             $('.text').append('<span style="display:block;" id="'+index+'"></span>');
             
@@ -53,6 +148,17 @@
                         $('body, html').scrollTop($(document).height());
                     }, index*5);
                 });
+                
+                // Contador de líneas completadas
+                completedLines++;
+                
+                // Cuando termine todo el código, mostrar logo
+                if(completedLines === totalLines) {
+                    setTimeout(function() {
+                        $('.overlay').addClass('show');
+                        $('.logo-container').addClass('show');
+                    }, 1000);
+                }
             }, index*100);
         });
     </script>
